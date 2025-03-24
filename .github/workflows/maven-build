@@ -35,7 +35,7 @@ jobs:
       - name: SonarCloud Scan
         run: |
           mvn -B verify sonar:sonar \
-            -Dsonar.projectKey=anjudoll_java-hello-world-maven \
+            -Dsonar.projectKey=jpetstore-2_jpetstore-2 \
             -Dsonar.organization=anjudoll \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
