@@ -1,0 +1,42 @@
+name: Maven Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - 'releases/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: maven
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build with Maven
+        run: mvn -B package -f pom.xml
+
+      - name: SonarCloud Scan
+        run: |
+          mvn -B verify sonar:sonar \
+            -Dsonar.projectKey=anjudoll_java-hello-world-maven \
+            -Dsonar.organization=anjudoll \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
